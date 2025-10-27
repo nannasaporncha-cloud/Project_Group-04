@@ -1,23 +1,36 @@
 import pygame
-import sys
-from setting import*
-from background import*
 
 pygame.init()
 
 #ชื่อเกมบนtapbar
-pygame.display.set_caption("The Exorcist of Siam")
+pygame.display.set_caption("Exorcist")
 
 #charactersize
 tilesize = 50
 
+#sizescreen
+screenW = 1200
+screenH = 800
+screen = pygame.display.set_mode((screenW,screenH))
+screen_rect = screen.get_rect()
+
+#ตั้งค่าสีRGB
+white = (255,255,255)
+
+#movespeed
+speed = 5
+
+#FPS
+fps = 30
+clock = pygame.time.Clock()
+
 #background
-BGf0= pygame.image.load('game/image/BGf0.png').convert_alpha()
-BGf0= pygame.transform.scale(BGf0, (tilesize*10, tilesize*8))
-BGf0 = BGf0.get_rect()
+BGf0= pygame.image.load('game/image/background/BGf0.png').convert_alpha()
+BGf0= pygame.transform.scale(BGf0, (screenW, screenH))
+BGf0_rect = BGf0.get_rect()
 
 #player
-player = pygame.image.load('game/image/mc_front.png').convert_alpha()
+player = pygame.image.load('game/image/player/mc_front/chisom_front.png').convert_alpha()
 player = pygame.transform.scale(player, (tilesize*2, tilesize*2))
 
 #ตั้งค่าplayer
@@ -43,7 +56,7 @@ def updeate():
 
 def draw():
     screen.fill(white)
-    screen_rect = screen.get_rect()
+    screen.blit( BGf0,BGf0_rect)
     screen.blit( player,player_rect)
 
 
@@ -51,8 +64,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            sys.exit()
-    
+
+    print(player_rect)
+            
     updeate()
     draw()
     clock.tick(fps)
