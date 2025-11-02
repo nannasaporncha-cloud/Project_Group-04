@@ -1,72 +1,88 @@
-import pygame , sys
-from sys import*
+import pygame, sys
+from pygame.locals import *
 
-#screen
 pygame.init()
+
+# ขนาดหน้าจอ
 screenW = 1200
-screenH = 800 
-tilesize = 50
-screen = pygame.display.set_mode((screenW,screenH))
+screenH = 800
+tilesize = 30
+screen = pygame.display.set_mode((screenW, screenH))
+pygame.display.set_caption("Tilemap with Background")
 
-#สี
-white = (255,255,255)
+# สี
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (0, 0, 0)
 
-def tilemap(self):
-    for i, row in enumerate(tilemap):
-        for j,column in enumerate(row):
-            if column == 'B':
-                block(self,j,i)
-            elif column == 'a':
-                block
+# โหลดรูปฉาก
+# ใส่ชื่อไฟล์ภาพของคุณแทน "background.png"
+bg = pygame.image.load("img/fronthouse.jpg").convert()
+bg = pygame.transform.scale(bg, (screenW, screenH))
 
-                
-
-def update(self):
-    self.all_sprites = pygame.sprite.LayeredUpdates()
-    self.playing = True
-
-#layer
-p_layer = 2
-b_layer = 1
-
+# tilemap
 tilemap = [
-    'aBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBa',
-    'a..........................................................a',  
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a..........................................................a',
-    'a............................P.............................a',   
-    'aBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBa',
-]    
-class block(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.game = game
-        self._layer = b_layer
-        self.group = self.game.all_sprites, self.game.block
-        pygame.sprite.Sprite.__init__(self,self.group)
-        
-        self.x = x*tilesize
-        self.y = y*tilesize
-        self.screenW = screenW
-        self.screenH = screenH
-        
-        self.image = pygame.Surface([self.screenW,self.screenH])
-        self.image.fill(white)
-                
-        #สร้าง4เหลี่ยม
+    'aBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBa',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'a........................................................................................................a',
+    'aBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBa',
+]
+
+# กลุ่ม Sprite
+all_sprites = pygame.sprite.Group()
+blocks = pygame.sprite.Group()
+
+# คลาส Block
+class Block(pygame.sprite.Sprite):
+    def __init__(self, x, y, color):
+        super().__init__(all_sprites, blocks)
+        self.image = pygame.Surface((tilesize, tilesize))
+        self.image.fill(color)
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-        
-        
+        self.rect.x = x * tilesize
+        self.rect.y = y * tilesize
+        all_sprites.draw(screen)
+
+# ฟังก์ชันสร้าง tilemap
+def draw_tilemap():
+    for y, row in enumerate(tilemap):
+        for x, tile in enumerate(row):
+            if tile == 'B' or tile == 'a':
+                Block(x, y, red)
+
+draw_tilemap()
+
+# Game Loop
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # วาดฉากพื้นหลัง
+    screen.blit(bg, (0, 0))
+    
+    pygame.display.flip()
+
+    pygame.display.flip()
+    clock.tick(60)
