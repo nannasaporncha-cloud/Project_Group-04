@@ -2,22 +2,19 @@ import pygame
 from pathlib import Path
 import setting as s
 
-
-# Class Player
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y,):
         super().__init__()
-        # กำหนดขนาดมาตรฐานของทุกภาพ
+        # กำหนดขนาดมาตรฐาน
         self.frame_size = (250, 250)
         self.attack_size = (270,270)
 
-        # เก็บแยกรูปตามทิศทาง
         self.animations = {
-            'down': [],   # เดินหน้า (ลง)
-            'up': [],     # ถอยหลัง (ขึ้น)
-            'left': [],   # ซ้าย
-            'right': [],  # ขวา
-            'attack': [],  # โจมตี
+            'down': [],  
+            'up': [],    
+            'left': [],   
+            'right': [],  
+            'attack': [],  
         }
 
         # กำหนดโฟลเดอร์ฐานสำหรับรูปภาพ 
@@ -27,9 +24,7 @@ class Player(pygame.sprite.Sprite):
             for i in range(3):
                 img_path = folder / f'{i}.png'
                 img = pygame.image.load(str(img_path)).convert_alpha()
-                
                 img = pygame.transform.scale(img, self.frame_size)
-                 # เพิ่มภาพที่ปรับขนาดแล้วลงในลิสต์ของทิศทางนั้น
                 self.animations[name].append(img)
 
         attackL = pygame.image.load("D:\project102\game\image\player\mc_attack\L.png").convert_alpha()
@@ -37,15 +32,13 @@ class Player(pygame.sprite.Sprite):
         
         self.attackL = pygame.transform.scale(attackL,self.attack_size)
         self.attackR = pygame.transform.scale(attackR,self.attack_size)
-        
-         # เพิ่มภาพท่าโจมตีลงในลิสต์ของทิศทางโจมตี
+    
         self.animations['attackL'] = [self.attackL,]
         self.animations['attackR'] = [self.attackR,]
-         # เพิ่มตัวแปรควบคุมการโจมตี
+
         self.attacking = False
         self.attack_timer = 0
-        self.attack_duration = 30  # ระยะเวลาแสดงท่าโจมตี (เฟรม)
-
+        self.attack_duration = 30  
 
         self.current_sprite = 0
         self.current_direction = 'down'
@@ -90,18 +83,12 @@ class Player(pygame.sprite.Sprite):
             self.attack_timer = pygame.time.get_ticks()
             self.is_moving = True
 
-        # อัพเดทตัวจับเวลาการโจมตี
+        # ตัวจับเวลาการโจมตี
         if self.attacking:
             self.attack_timer -= 1
             if self.attack_timer <= 0:
                 self.attacking = False
                 new_dir = self.current_direction  # กลับไปทิศทางเดิม
-
-                if self.current_direction in ['left', 'attackL']:
-                    new_dir = 'attackL'
-                elif self.current_direction in ['right', 'attackR']:
-                    new_dir = 'attackR'
-                
 
         
         # เปลี่ยนทิศถ้าแตกต่าง และรีเซ็ตเฟรมเริ่มต้น
@@ -120,8 +107,6 @@ class Player(pygame.sprite.Sprite):
         old_topleft = self.rect.topleft
         self.image = frames[int(self.current_sprite)]
         self.rect = self.image.get_rect(topleft=old_topleft)
-
-
 
 # Player setup
 player = Player(200, 100,)  
