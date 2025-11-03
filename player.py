@@ -1,13 +1,15 @@
 import pygame
 from pathlib import Path
-from setting import screenW, screenH, white, fps ,speed
+import setting as s
 
 
 # Class Player
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y, scale):
+    def __init__(self, pos_x, pos_y,):
         super().__init__()
-        self.scale = scale  # อัตราการขยายตัวละคร
+        # กำหนดขนาดมาตรฐานของทุกภาพ
+        self.frame_size = (250, 250)
+        self.attack_size = (270,270)
 
         # เก็บแยกรูปตามทิศทาง
         self.animations = {
@@ -25,11 +27,24 @@ class Player(pygame.sprite.Sprite):
             for i in range(3):
                 img_path = folder / f'{i}.png'
                 img = pygame.image.load(str(img_path)).convert_alpha()
-                w, h = img.get_size()
-                img = pygame.transform.scale(img, (int(w * self.scale), int(h * self.scale)))
+                
+                img = pygame.transform.scale(img, self.frame_size)
+                 # เพิ่มภาพที่ปรับขนาดแล้วลงในลิสต์ของทิศทางนั้น
                 self.animations[name].append(img)
 
+        attackL = pygame.image.load("D:\project102\game\image\player\mc_attack\L.png").convert_alpha()
+        attackR = pygame.image.load("D:\project102\game\image\player\mc_attack\R.png").convert_alpha()
         
+        self.attackL = pygame.transform.scale(attackL,self.attack_size)
+        self.attackR = pygame.transform.scale(attackR,self.attack_size)
+        
+         # เพิ่มภาพท่าโจมตีลงในลิสต์ของทิศทางโจมตี
+        self.animations['attackL'] = [self.attackL,]
+        self.animations['attackR'] = [self.attackR,]
+         # เพิ่มตัวแปรควบคุมการโจมตี
+        self.attacking = False
+        self.attack_timer = 0
+        self.attack_duration = 30  # ระยะเวลาแสดงท่าโจมตี (เฟรม)
 
 
         self.current_sprite = 0
@@ -48,26 +63,45 @@ class Player(pygame.sprite.Sprite):
 
         # moving
         if keys[pygame.K_a] and self.rect.left > 0:
-            self.rect.x -= speed
+            self.rect.x -= s.speed
             new_dir = 'left'
             self.is_moving = True
-        elif keys[pygame.K_d] and self.rect.right < screenW:
-            self.rect.x += speed
+        elif keys[pygame.K_d] and self.rect.right < s.screenW:
+            self.rect.x += s.speed
             new_dir = 'right'
             self.is_moving = True
         elif keys[pygame.K_w] and self.rect.top > 0:
-            self.rect.y -= speed
+            self.rect.y -= s.speed
             new_dir = 'up'
             self.is_moving = True
-        elif keys[pygame.K_s] and self.rect.bottom < screenH:
-            self.rect.y += speed
+        elif keys[pygame.K_s] and self.rect.bottom < s.screenH:
+            self.rect.y += s.speed
             new_dir = 'down'
             self.is_moving = True
         
         
         if keys[pygame.K_SPACE] :
-            new_dir = 'attack'
+            if keys[pygame.K_a]:  
+                new_dir = 'attackL'
+            elif keys[pygame.K_d] :  
+                new_dir = 'attackR'
+                
+            self.attacking = True
+            self.attack_timer = pygame.time.get_ticks()
             self.is_moving = True
+
+        # อัพเดทตัวจับเวลาการโจมตี
+        if self.attacking:
+            self.attack_timer -= 1
+            if self.attack_timer <= 0:
+                self.attacking = False
+                new_dir = self.current_direction  # กลับไปทิศทางเดิม
+
+                if self.current_direction in ['left', 'attackL']:
+                    new_dir = 'attackL'
+                elif self.current_direction in ['right', 'attackR']:
+                    new_dir = 'attackR'
+                
 
         
         # เปลี่ยนทิศถ้าแตกต่าง และรีเซ็ตเฟรมเริ่มต้น
@@ -82,8 +116,6 @@ class Player(pygame.sprite.Sprite):
             self.current_sprite += self.anim_speed
             if self.current_sprite >= len(frames):
                 self.current_sprite = 0.0
-        else:
-           self.current_sprite = 0.0
 
         old_topleft = self.rect.topleft
         self.image = frames[int(self.current_sprite)]
@@ -92,22 +124,7 @@ class Player(pygame.sprite.Sprite):
 
 
 # Player setup
-player = Player(200, 100, scale=0.6)  
+player = Player(200, 100,)  
 moving_sprites = pygame.sprite.Group()
 moving_sprites.add(player)
-
-pygame.init()
-pygame.display.set_caption("Exorcist")
-screen = pygame.display.set_mode((screenW, screenH))
-clock = pygame.time.Clock()
-
-# load background โดยใช้ Path อ้างอิงโฟลเดอร์นี้
-base = Path(__file__).parent / 'image' / 'background'
-BGf0_path = base / 'BGf0.png'
-BGf0 = pygame.image.load(str(BGf0_path)).convert_alpha()
-BGf0 = pygame.transform.scale(BGf0, (screenW, screenH))
-BGf0_rect = BGf0.get_rect(center=(screenW//2, screenH//2))
-
-player = Player(200, 100, scale=0.6)
-moving_sprites = pygame.sprite.Group(player)
 
