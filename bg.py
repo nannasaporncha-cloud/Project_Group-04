@@ -4,8 +4,8 @@ from pygame.locals import *
 pygame.init()
 
 # ขนาดหน้าจอ
-screenW = 1200
-screenH = 800
+screenW = 1500
+screenH = 850
 tilesize = 30
 screen = pygame.display.set_mode((screenW, screenH))
 pygame.display.set_caption("Tilemap with Background")
@@ -17,7 +17,7 @@ red = (0, 0, 0)
 
 # โหลดรูปฉาก
 # ใส่ชื่อไฟล์ภาพของคุณแทน "background.png"
-bg = pygame.image.load("img/fronthouse.jpg").convert()
+bg = pygame.image.load("img/Bg_img/fronthouse.jpg").convert()
 bg = pygame.transform.scale(bg, (screenW, screenH))
 
 # tilemap
