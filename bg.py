@@ -4,8 +4,8 @@ from pygame.locals import *
 pygame.init()
 
 # ขนาดหน้าจอ
-screenW = 1200
-screenH = 800
+screenW = 1500
+screenH = 850
 tilesize = 30
 screen = pygame.display.set_mode((screenW, screenH))
 pygame.display.set_caption("Tilemap with Background")
