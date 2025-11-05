@@ -17,7 +17,7 @@ red = (0, 0, 0)
 
 # โหลดรูปฉาก
 # ใส่ชื่อไฟล์ภาพของคุณแทน "background.png"
-bg = pygame.image.load("img/fronthouse.jpg").convert()
+bg = pygame.image.load("img/Bg_img/fronthouse.jpg").convert()
 bg = pygame.transform.scale(bg, (screenW, screenH))
 
 # tilemap
