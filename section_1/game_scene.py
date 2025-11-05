@@ -1,5 +1,6 @@
 import pygame
-WIDTH , HEIGHT = 600, 400
+
+WIDTH , HEIGHT = 1500, 850
 
 def run_game(screen):
     pygame.display.set_caption("My Game - Playing")
@@ -10,9 +11,10 @@ def run_game(screen):
 
     #เพลงพื้นหลัง loop นะจ๊ะ
     try:
-        pygame.mixer.music.load("assets/bgm.mp3")
-        pygame.mixer.music.set_volume(0.4)
-        pygame.mixer.music.play(-1) #-1 = loop
+        pygame.mixer.init()
+        pygame.mixer.music.load("assets/Thai_intro.mp3")
+        pygame.mixer.music.play(-1, start= 9.0) #-1 = loop
+        pygame.mixer.music.set_volume(0.2)
     except Exception as e:
         print("BGM error:", e)
     
