@@ -7,24 +7,24 @@ pygame.display.set_caption("Exorcist")
 # === โหลดภาพผี ===
 ghost_frames = {
     "right": [
-        pygame.image.load(os.path.join("image/enemy/ghost0.png")).convert_alpha(),
-        pygame.image.load(os.path.join("image/enemy/ghost1.png")).convert_alpha()
+        pygame.image.load(os.path.join("enemy/ghost0.png")).convert_alpha(),
+        pygame.image.load(os.path.join("enemy/ghost1.png")).convert_alpha()
     ],
     "left": [
-        pygame.image.load(os.path.join("image/enemy/ghost2.png")).convert_alpha(),
-        pygame.image.load(os.path.join("image/enemy/ghost3.png")).convert_alpha()
+        pygame.image.load(os.path.join("enemy/ghost2.png")).convert_alpha(),
+        pygame.image.load(os.path.join("enemy/ghost3.png")).convert_alpha()
     ],
     "up": [
-        pygame.image.load(os.path.join("image/enemy/ghost4.png")).convert_alpha(),
-        pygame.image.load(os.path.join("image/enemy/ghost5.png")).convert_alpha()
+        pygame.image.load(os.path.join("enemy/ghost4.png")).convert_alpha(),
+        pygame.image.load(os.path.join("enemy/ghost5.png")).convert_alpha()
     ],
     "down": [
-        pygame.image.load(os.path.join("image/enemy/ghost6.png")).convert_alpha(),
-        pygame.image.load(os.path.join("image/enemy/ghost7.png")).convert_alpha()
+        pygame.image.load(os.path.join("enemy/ghost6.png")).convert_alpha(),
+        pygame.image.load(os.path.join("enemy/ghost7.png")).convert_alpha()
     ]
 }
 for d in ghost_frames:
-    ghost_frames[d] = [pygame.transform.scale(img, (40,80)) for img in ghost_frames[d]]
+    ghost_frames[d] = [pygame.transform.scale(img, (40,100)) for img in ghost_frames[d]]
 
 # === สร้างผี ===
 ghost = pygame.Rect(200, 200, 50, 120)
