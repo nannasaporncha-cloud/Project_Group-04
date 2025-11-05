@@ -6,8 +6,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y,):
         super().__init__()
         # กำหนดขนาดมาตรฐาน
-        self.frame_size = (250, 250)
-        self.attack_size = (270,270)
+        self.frame_size = (130, 130)
+        self.attack_size = (150,150)
 
         self.animations = {
             'down': [],  
@@ -109,7 +109,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=old_topleft)
 
 # Player setup
-player = Player(200, 100,)  
+player = Player(s.center_y-25, s.center_x+250,)  
 moving_sprites = pygame.sprite.Group()
 moving_sprites.add(player)
 
