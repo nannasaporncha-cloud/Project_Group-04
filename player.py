@@ -1,6 +1,13 @@
 import pygame
 from pathlib import Path
 import setting as s
+#from pydub import AudioSegment
+#from io import BytesIO
+
+pygame.init()
+
+#attck_sound = pygame.mixer.Sound("game/image/assets/attack_sf.mp3")
+#pygame.mixer.music.set_volume(0.5)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y,):
@@ -19,7 +26,10 @@ class Player(pygame.sprite.Sprite):
 
         # กำหนดโฟลเดอร์ฐานสำหรับรูปภาพ 
         base = Path(__file__).parent / 'image' / 'player'
-        for name, sub in [('down', 'mc_front'), ('up', 'mc_back'), ('left', 'mc_left'), ('right', 'mc_right')]:
+        for name, sub in [('down', 'mc_front'), 
+                          ('up', 'mc_back'), 
+                          ('left', 'mc_left'), 
+                          ('right', 'mc_right')]:
             folder = base / sub
             for i in range(3):
                 img_path = folder / f'{i}.png'
@@ -27,27 +37,21 @@ class Player(pygame.sprite.Sprite):
                 img = pygame.transform.scale(img, self.frame_size)
                 self.animations[name].append(img)
 
-        attackL = pygame.image.load("D:\project102\game\image\player\mc_attack\L.png").convert_alpha()
-        attackR = pygame.image.load("D:\project102\game\image\player\mc_attack\R.png").convert_alpha()
-        
-        self.attackL = pygame.transform.scale(attackL,self.attack_size)
-        self.attackR = pygame.transform.scale(attackR,self.attack_size)
-    
-        self.animations['attackL'] = [self.attackL,]
-        self.animations['attackR'] = [self.attackR,]
+        attackL = pygame.image.load(str(base / 'mc_attack' / 'L.png')).convert_alpha()
+        attackR = pygame.image.load(str(base / 'mc_attack' / 'R.png')).convert_alpha()
+        self.animations['attackL'] = [pygame.transform.scale(attackL, self.attack_size)]
+        self.animations['attackR'] = [pygame.transform.scale(attackR, self.attack_size)]
 
+        self.is_moving = False
         self.attacking = False
         self.attack_timer = 0
-        self.attack_duration = 30  
+        self.attack_duration = 0  
 
         self.current_sprite = 0
         self.current_direction = 'down'
         self.anim_speed = 0.17
         self.image = self.animations[self.current_direction][0]
         self.rect = self.image.get_rect(topleft=(pos_x, pos_y))
-
-        self.is_moving = False
-        
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -76,33 +80,34 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] :
             if keys[pygame.K_a]:  
                 new_dir = 'attackL'
+                #attck_sound.play()
             elif keys[pygame.K_d] :  
-                new_dir = 'attackR'
-                
+                new_dir = 'attackR' 
+                #attck_sound.play()
             self.attacking = True
             self.attack_timer = pygame.time.get_ticks()
-            self.is_moving = True
 
         # ตัวจับเวลาการโจมตี
         if self.attacking:
-            self.attack_timer -= 1
-            if self.attack_timer <= 0:
+            now = pygame.time.get_ticks()
+            if now - self.attack_timer > self.attack_duration:  # ถ้าเกินเวลาที่กำหนด
                 self.attacking = False
                 new_dir = self.current_direction  # กลับไปทิศทางเดิม
-
-        
+            
         # เปลี่ยนทิศถ้าแตกต่าง และรีเซ็ตเฟรมเริ่มต้น
         if new_dir and new_dir != self.current_direction:
             self.current_direction = new_dir
-            self.current_sprite = 0.0
+            self.current_sprite = 0
 
         frames = self.animations[self.current_direction]
 
         # animation
-        if self.is_moving:
+        if self.is_moving or self.attacking:
             self.current_sprite += self.anim_speed
             if self.current_sprite >= len(frames):
                 self.current_sprite = 0.0
+        else:
+            self.current_sprite = 0.0
 
         old_topleft = self.rect.topleft
         self.image = frames[int(self.current_sprite)]
