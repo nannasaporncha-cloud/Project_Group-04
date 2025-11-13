@@ -1,13 +1,10 @@
 import pygame
 from pathlib import Path
 import setting as s
-#from pydub import AudioSegment
-#from io import BytesIO
 
 pygame.init()
-
-#attck_sound = pygame.mixer.Sound("game/image/assets/attack_sf.mp3")
-#pygame.mixer.music.set_volume(0.5)
+#attck_sound = pygame.mixer.Sound("game/image/assets/attack_sf.wav")
+#attck_sound.play()
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y,):
@@ -80,10 +77,8 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] :
             if keys[pygame.K_a]:  
                 new_dir = 'attackL'
-                #attck_sound.play()
             elif keys[pygame.K_d] :  
-                new_dir = 'attackR' 
-                #attck_sound.play()
+                new_dir = 'attackR'
             self.attacking = True
             self.attack_timer = pygame.time.get_ticks()
 
