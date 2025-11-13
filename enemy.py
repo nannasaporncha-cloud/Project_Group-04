@@ -1,6 +1,6 @@
 import pygame, random, os
-from player import player, moving_sprites  # ← ตัวละครหลักจาก player.py
-from setting import screen, clock, BGf0, BGf0_rect, white, fps  # ← จอ + พื้นหลัง
+from player import player, moving_sprites
+from setting import screen, clock, BGf0, BGf0_rect, white, fps
 
 pygame.display.set_caption("Exorcist")
 
@@ -154,3 +154,4 @@ while running:
 
 
 pygame.quit()
+
