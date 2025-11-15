@@ -25,13 +25,13 @@ ghost_frames = {
 }
 
 for d in ghost_frames:
-    ghost_frames[d] = [pygame.transform.scale(img, (100,100)) for img in ghost_frames[d]]
+    ghost_frames[d] = [pygame.transform.scale(img,(100,100)) for img in ghost_frames[d]]
 
 # สร้างโซนสี่เหลี่ยม 4 โซน
-zone1 = pygame.Rect(100, 100, 300, 300)
-zone2 = pygame.Rect(500, 100, 300, 300)
-zone3 = pygame.Rect(100, 450, 300, 300)
-zone4 = pygame.Rect(500, 450, 300, 300)
+zone1 = pygame.Rect(100,100,300,300)
+zone2 = pygame.Rect(500,100,300,300)
+zone3 = pygame.Rect(100,450,300,300)
+zone4 = pygame.Rect(500,450,300,300)
 
 zones = [zone1, zone2, zone3, zone4]
 
@@ -45,7 +45,7 @@ for zone in zones:
             50, 120
         ),
         "room": zone,
-        "speed": random.randint(2, 5),
+        "speed": random.randint(2,5),
         "frame_index": 0,
         "frame_timer": 0,
         "direction": "right",
