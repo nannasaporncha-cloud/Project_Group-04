@@ -12,7 +12,9 @@ def run_story(screen):
    DARK_RED = (80, 0, 0)
    # ฟอนต์
    thai_font = "assets/THsarabaneiei.ttf"
-   font = pygame.font.Font(thai_font, 46 )
+   font = pygame.font.Font(thai_font, 48 )
+   hint = pygame.font.Font(thai_font, 22 )
+
    # โหลดรูป
    car_bg = pygame.image.load("assets/story1_accident.png")
    car_bg = pygame.transform.scale(car_bg, (WIDTH, HEIGHT))
@@ -100,10 +102,10 @@ def run_story(screen):
                return
            if event.type == pygame.KEYDOWN:
                if event.key == pygame.K_RETURN:
-                   # ยังไม่จบเนื้อเรื่อง → ไปบรรทัดถัดไป
+                   # ยังไม่จบเนื้อเรื่อง ไปบรรทัดถัดไป
                    if current_line < len(dialog_lines) - 1:
                        current_line += 1
-                   # จบบรรทัดสุดท้ายแล้ว → เข้าฉากเกม
+                   # จบบรรทัดสุดท้ายแล้ว เข้าฉากเกม
                    else:
                        pygame.mixer.music.fadeout(500)
                        in_scene3 = False
@@ -116,8 +118,9 @@ def run_story(screen):
        line_surface = font.render(dialog_lines[current_line], True, BLACK)
        screen.blit(line_surface, (dialog_rect.x + 16, dialog_rect.y + 24))
        # hint ด้านล่าง
-       hint = font.render("", True, DARK_RED)
-       screen.blit(hint, (dialog_rect.x + 16, dialog_rect.y + dialog_rect.height - 30))
+    
+       hint_show = hint.render("กด Enter เพื่อไปต่อ", True, DARK_RED)
+       screen.blit(hint_show, (dialog_rect.x + 16, dialog_rect.y + dialog_rect.height - 30))
        pygame.display.flip()
        clock.tick(60)
    # จบ story แล้วเข้า game scene ของพวกมึง

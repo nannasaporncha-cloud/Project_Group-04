@@ -2,6 +2,7 @@ import pygame, random, os
 from player import player, moving_sprites
 from setting import screen, clock, BGf0, BGf0_rect, white, fps
 
+hp = 3
 pygame.display.set_caption("Exorcist")
 
 # โหลดภาพผี
@@ -139,6 +140,11 @@ while running:
                 move_random(g)
 
             keep_inside(g)
+            # ถ้าผู้เล่นถูกผีชน
+            if g["state"] == "active" and player.rect.colliderect(g["rect"]):
+                hp -= 1
+                if hp < 0:
+                    hp = 0
 
             g["frame_timer"] += 1
             if g["frame_timer"] >= 15:
