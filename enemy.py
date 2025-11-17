@@ -1,6 +1,7 @@
 import pygame, random, os
 from player import player, moving_sprites
 from setting import screen, clock, BGf0, BGf0_rect, white, fps
+from end_scene import run_ending
 
 killed_count = 0
 hp = 3
@@ -129,6 +130,8 @@ while running:
             new_dir = 'attackR'
             attack_rect = pygame.Rect(player.rect.right, player.rect.centery-20, 40, 40)
 
+
+
     # update player
     player.update()
 
@@ -186,5 +189,12 @@ while running:
 
     pygame.display.update()
     clock.tick(fps)
+
+    if killed_count >= 4:
+        running = False
+        pygame.display.update()
+        clock.tick(fps)
+    if killed_count >= 4:
+        run_ending()
 
 pygame.quit()
