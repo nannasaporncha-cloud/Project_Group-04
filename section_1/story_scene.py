@@ -114,16 +114,16 @@ def run_story(screen):
        # กล่องข้อความ
        pygame.draw.rect(screen, WHITE, dialog_rect, border_radius=8)
        pygame.draw.rect(screen, BLACK, dialog_rect, 2, border_radius=8)
-       # ข้อความตอนนี้
+     
        line_surface = font.render(dialog_lines[current_line], True, BLACK)
        screen.blit(line_surface, (dialog_rect.x + 16, dialog_rect.y + 24))
        # hint ด้านล่าง
     
-       hint_show = hint.render("กด Enter เพื่อไปต่อ", True, DARK_RED)
+       hint_show = font.render("", True, DARK_RED)
        screen.blit(hint_show, (dialog_rect.x + 16, dialog_rect.y + dialog_rect.height - 30))
        pygame.display.flip()
        clock.tick(60)
-   # จบ story แล้วเข้า game scene ของพวกมึง
+   # จบ story แล้วเข้า game scene
    run_game(screen)
  
  
