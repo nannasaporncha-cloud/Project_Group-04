@@ -2,8 +2,6 @@ import pygame, random, os
 from player import player, moving_sprites
 from setting import screen, clock, BGf0, BGf0_rect, white, fps
 
-pygame.display.set_caption("Exorcist")
-
 # โหลดภาพผี (ปัญญาประดิษฐ์)
 ghost_frames = {
     "right": [
