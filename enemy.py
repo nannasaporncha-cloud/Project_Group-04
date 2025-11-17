@@ -2,6 +2,7 @@ import pygame, random, os
 from player import player, moving_sprites
 from setting import screen, clock, BGf0, BGf0_rect, white, fps
 
+killed_count = 0
 hp = 3
 pygame.display.set_caption("Exorcist")
 
@@ -168,6 +169,7 @@ while running:
                 g["hp"] -= 1
                 if g["hp"] <= 0:
                     g["state"] = "fading"
+                    killed_count += 1
                     death_sound.play()
 
     # draw everything
