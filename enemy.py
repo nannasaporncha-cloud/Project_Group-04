@@ -4,7 +4,7 @@ from setting import screen, clock, BGf0, BGf0_rect, white, fps
 
 pygame.display.set_caption("Exorcist")
 
-# โหลดภาพผี
+# โหลดภาพผี (ปัญญาประดิษฐ์)
 ghost_frames = {
     "right": [
         pygame.image.load(os.path.join("image_enemy/ghost1.png")).convert_alpha(),
@@ -25,9 +25,9 @@ ghost_frames = {
 }
 
 for d in ghost_frames:
-    ghost_frames[d] = [pygame.transform.scale(img,(100,100)) for img in ghost_frames[d]]
+    ghost_frames[d] = [pygame.transform.scale(img,(80,80)) for img in ghost_frames[d]]
 
-# สร้างโซนสี่เหลี่ยม 4 โซน
+# สร้างโซนสี่เหลี่ยม 4 โซน (ศึกษาเองจาก https://www.youtube.com/watch?v=SpQHJgJi7mk)
 zone1 = pygame.Rect(100,100,300,300)
 zone2 = pygame.Rect(500,100,300,300)
 zone3 = pygame.Rect(100,450,300,300)
@@ -35,17 +35,17 @@ zone4 = pygame.Rect(500,450,300,300)
 
 zones = [zone1, zone2, zone3, zone4]
 
-# สุ่มสร้างผี 4 ตัว
+# สุ่มสร้างผี 4 ตัว (ปัญญาประดิษฐ์ ยกเว้น random.randrange ศึกษาจาก Lab 7 ข้อที่ 5)
 ghosts = []
 for zone in zones:
     g = {
         "rect": pygame.Rect(
-            random.randint(zone.left, zone.right),
-            random.randint(zone.top, zone.bottom),
+            random.randrange(zone.left, zone.right),
+            random.randrange(zone.top, zone.bottom),
             50, 120
         ),
         "room": zone,
-        "speed": random.randint(2,5),
+        "speed": random.randrange(2,5),
         "frame_index": 0,
         "frame_timer": 0,
         "direction": "right",
@@ -53,19 +53,19 @@ for zone in zones:
         "alpha": 150,
         "hp": random.randint(5,8),
         "target": [
-            random.randint(zone.left, zone.right),
-            random.randint(zone.top, zone.bottom)
+            random.randrange(zone.left, zone.right),
+            random.randrange(zone.top, zone.bottom)
         ]
     }
     ghosts.append(g)
 
 
-# ผีเคลื่อนที่
+# ผีเคลื่อนที่ (ปัญญาประดิษฐ์)
 def move_random(g):
     if abs(g["rect"].x - g["target"][0]) < 5 and abs(g["rect"].y - g["target"][1]) < 5:
         g["target"] = [
-            random.randint(g["room"].left, g["room"].right),
-            random.randint(g["room"].top, g["room"].bottom)
+            random.randrange(g["room"].left, g["room"].right),
+            random.randrange(g["room"].top, g["room"].bottom)
         ]
 
     dx = g["target"][0] - g["rect"].x
@@ -105,8 +105,7 @@ def keep_inside(g):
     if r.bottom > room.bottom: r.bottom = room.bottom
 
 
-# Game Loop
-
+# Game Loop (ปัญญาประดิษฐ์)
 running = True
 while running:
     for event in pygame.event.get():
@@ -115,7 +114,7 @@ while running:
 
     keys = pygame.key.get_pressed()
 
-    # player attack
+    # player attack (ปัญญาประดิษฐ์ ยกเว้น เงื่อนไขใน if ของ player attack ศึกษาแล้วนำมาจาก player.py แต่ไม่ใช่ attack_rect)
     attack = False
     attack_rect = None
     if keys[pygame.K_SPACE]:
@@ -127,10 +126,9 @@ while running:
             new_dir = 'attackR'
             attack_rect = pygame.Rect(player.rect.right, player.rect.centery-20, 40, 40)
 
-    # update player
     player.update()
 
-    # update ghosts
+    # update ghosts (ปัญญาประดิษฐ์)
     for g in ghosts:
         if g["state"] == "active":
             if g["room"].collidepoint(player.rect.center):
@@ -151,10 +149,9 @@ while running:
                 g["state"] = "gone"
                 g["alpha"] = 0
 
-    # detect attack hit
+    # detect attack hit (ปัญญาประดิษฐ์ ยกเว้น sound ศึกษามาจาก https://www.youtube.com/watch?v=n1mKIK7lCx0)
     pygame.mixer.init()
-    death_sound = pygame.mixer.Sound(os.path.join("image_enemy/ghost_sound.mp3"))
-    death_sound.set_volume(0.5)
+    death_sound = pygame.mixer.Sound("image_enemy/ghost_sound.mp3")
 
     if attack:
         for g in ghosts:
@@ -162,14 +159,14 @@ while running:
                 g["hp"] -= 1
                 if g["hp"] <= 0:
                     g["state"] = "fading"
-                    death_sound.play()
+                    pygame.mixer.Sound.play(death_sound)
 
-    # draw everything
+    # draw everything (ปัญญาประดิษฐ์)
     screen.fill(white)
     screen.blit(BGf0, BGf0_rect)
     moving_sprites.draw(screen)
 
-    # draw all ghosts
+    # draw all ghosts (ปัญญาประดิษฐ์)
     for g in ghosts:
         if g["state"] != "gone":
             img = ghost_frames[g["direction"]][g["frame_index"]].copy()
