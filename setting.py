@@ -1,23 +1,27 @@
 import pygame
-import player as p
-from pathlib import Path
+from bad_ending import bad_ending
+from menu_main import main
 
 pygame.init()
 
+#sizescreen
+screenW = 1500
+screenH = 850
+screen = pygame.display.set_mode((screenW,screenH))
+
 #ชื่อเกมบนtapbar
 pygame.display.set_caption("Exorcist")
-
-#charactersize
-tilesize = 50
-
-#sizescreen
-screenW = 1540
-screenH = 890
-screen = pygame.display.set_mode((screenW,screenH))
 screen_rect = screen.get_rect()
 
+#center
+center_y = screenW // 2
+center_x = screenH // 2
+
 #ตั้งค่าสีRGB
-white = (255,255,255)
+RED = (179,0,0)
+DARK_GRAY = (20,20,20)
+WHITE = (255,255,255)
+BLACK = (0,0,0)
 
 #movespeed
 speed = 5
@@ -27,19 +31,11 @@ fps = 30
 clock = pygame.time.Clock()
 
 #background
-BGf0= pygame.image.load('game/image/background/BGf0.png').convert_alpha()
-BGf0= pygame.transform.scale(BGf0, (screenW, screenH))
-BGf0_rect = BGf0.get_rect()
+BG= pygame.image.load('image_background/1.png').convert_alpha()
+BG= pygame.transform.scale(BG, (screenW, screenH))
+BG_rect = BG.get_rect(center=(screenW//2, screenH//2))
 
-def draw():
-    screen.fill(white)
-    screen.blit( BGf0,BGf0_rect)
-    screen.blit( p.player,p.player_rect)
-
-# load background โดยใช้ Path อ้างอิงโฟลเดอร์นี้
-base = Path(__file__).parent / 'image' / 'background'
-BGf0_path = base / 'BGf0.png'
-BGf0 = pygame.image.load(str(BGf0_path)).convert_alpha()
-BGf0 = pygame.transform.scale(BGf0, (screenW, screenH))
-BGf0_rect = BGf0.get_rect(center=(screenW//2, screenH//2))
-
+# retry
+state = bad_ending()
+if state == "retry":
+    main()
