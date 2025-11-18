@@ -6,10 +6,10 @@ pygame.init()
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group,):
-        super().__init__()
+        super().__init__(group)
         # กำหนดขนาดมาตรฐาน
         self.frame_size = (160, 160)
-        self.attack_size = (180,180)
+        self.attack_size = (185,185)
 
         self.animations = {
             'down': [],  
@@ -37,16 +37,20 @@ class Player(pygame.sprite.Sprite):
         self.animations['attackL'] = [pygame.transform.scale(attackL, self.attack_size)]
         self.animations['attackR'] = [pygame.transform.scale(attackR, self.attack_size)]
 
-        self.is_moving = False
-        self.attacking = False
-        self.attack_timer = 0
-        self.attack_duration = 0  
-
+        #state
         self.current_sprite = 0
         self.current_direction = 'down'
         self.anim_speed = 0.2
-        self.image = self.animations[self.current_direction][0]
+        self.image = self.animations['down'][0]
         self.rect = self.image.get_rect(center=pos)
+
+        #sys attack
+        self.attacking = False
+        self.attack_timer = 0
+        self.attack_duration = 150      # เวลาที่ภาพโจมตีค้าง (มิลลิวินาที)
+        self.attack_cooldown = 200      # เวลาก่อนจะตีครั้งใหม่ได้
+        self.can_attack = True          # ป้องกันกดค้าง
+        self.last_dir = 'down'
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -54,57 +58,63 @@ class Player(pygame.sprite.Sprite):
         new_dir = None
 
         # moving
-        if keys[pygame.K_a] and self.rect.left > 0:
+        if keys[pygame.K_a] :
             self.rect.x -= s.speed
-            new_dir = 'left'
-            self.is_moving = True
-        elif keys[pygame.K_d] and self.rect.right < s.screenW:
+            new_dir = 'left'; self.is_moving = True
+        elif keys[pygame.K_d] :
             self.rect.x += s.speed
-            new_dir = 'right'
-            self.is_moving = True
-        elif keys[pygame.K_w] and self.rect.top > 0:
+            new_dir = 'right'; self.is_moving = True
+        elif keys[pygame.K_w] :
             self.rect.y -= s.speed
-            new_dir = 'up'
-            self.is_moving = True
-        elif keys[pygame.K_s] and self.rect.bottom < s.screenH:
+            new_dir = 'up'; self.is_moving = True
+        elif keys[pygame.K_s] :
             self.rect.y += s.speed
-            new_dir = 'down'
-            self.is_moving = True
-        
-        
-        if keys[pygame.K_SPACE] :
-            if keys[pygame.K_a]:  
-                new_dir = 'attackL'
-            elif keys[pygame.K_d] :  
-                new_dir = 'attackR'
-            self.attacking = True
-            self.attack_timer = pygame.time.get_ticks()
+            new_dir = 'down'; self.is_moving = True
 
-        # ตัวจับเวลาการโจมตี
+        if self.is_moving:
+            self.last_dir = new_dir # เก็บท่าล่าสุดที่เดิน
+        
+        
+        if keys[pygame.K_SPACE] and self.can_attack and not self.attacking :
+            self.attacking = True
+            self.can_attack = False   # ป้องกันกดค้าง
+            self.attack_timer = pygame.time.get_ticks()
+            # ตั้งทิศทางโจมตีตอนกด SPACE
+            if self.last_dir == 'left':
+                self.current_direction = 'attackL'
+            else:
+                self.current_direction = 'attackR'
+            
+         # รีเซ็ต can_attack เมื่อปล่อยปุ่ม space
+        if not keys[pygame.K_SPACE]:
+            self.can_attack = True
+
+        # จบการโจมตี → กลับท่าเดิม
         if self.attacking:
             now = pygame.time.get_ticks()
-            if now - self.attack_timer > self.attack_duration:  # ถ้าเกินเวลาที่กำหนด
+            if now - self.attack_timer >= self.attack_duration:
                 self.attacking = False
-                new_dir = self.current_direction  # กลับไปทิศทางเดิม
+                self.current_direction = self.last_dir if self.last_dir else 'down'
             
-        # เปลี่ยนทิศถ้าแตกต่าง และรีเซ็ตเฟรมเริ่มต้น
-        if new_dir and new_dir != self.current_direction:
-            self.current_direction = new_dir
-            self.current_sprite = 0
+        # เปลี่ยน direction ปกติเมื่อเดิน (ไม่โจมตี)
+        if not self.attacking and new_dir:
+            if new_dir != self.current_direction:
+                self.current_direction = new_dir
+                self.current_sprite = 0
 
-        frames = self.animations[self.current_direction]
+        frames = self.animations.get(self.current_direction, self.animations['down'])
 
         # animation
-        if self.is_moving or self.attacking:
+        if self.is_moving and not self.attacking:
             self.current_sprite += self.anim_speed
             if self.current_sprite >= len(frames):
-                self.current_sprite = 0.0
+                self.current_sprite = 0
         else:
-            self.current_sprite = 0.0
+            self.current_sprite = 0
 
-        old_topleft = self.rect.topleft
+        old_center = self.rect.center
         self.image = frames[int(self.current_sprite)]
-        self.rect = self.image.get_rect(topleft=old_topleft)
+        self.rect = self.image.get_rect(center=old_center)
 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
@@ -125,7 +135,7 @@ class CameraGroup(pygame.sprite.Group):
         self.camera_rect = pygame.Rect(l,t,w,h)
           
         #ground
-        ground = pygame.image.load("game/image/background/floor.png").convert_alpha()
+        ground = pygame.image.load("image/background/floor.png").convert_alpha()
         self.ground_surf = pygame.transform.scale(ground,(1600,1200))
         self.ground_rect = self.ground_surf.get_rect(topleft=(0,0))
           
@@ -136,30 +146,28 @@ class CameraGroup(pygame.sprite.Group):
     def box_target_camera(self,target):
         if target.rect.left < self.camera_rect.left:
             self.camera_rect.left = target.rect.left
-        if target.rect.right > self.camera_rect.right:
+        elif target.rect.right > self.camera_rect.right:
             self.camera_rect.right = target.rect.right
+
         if target.rect.top < self.camera_rect.top:
             self.camera_rect.top = target.rect.top
-        if target.rect.bottom > self.camera_rect.bottom:
+        elif target.rect.bottom > self.camera_rect.bottom:
             self.camera_rect.bottom = target.rect.bottom
 
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
         
     def custom_draw(self,player):
-        self.center_target_camera(player)
+        self.box_target_camera(player)
 
         #ground
         ground_offset = self.ground_rect.topleft - self.offset
         self.display_surface.blit(self.ground_surf,ground_offset)
 
-        pygame.draw.rect(self.display_surface,'yellow',self.camera_rect,5)
-        
+        for sprite in self.sprites():
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image, offset_pos)
             
 #camera setup
 camera_group = CameraGroup()
-
-# Player setup
-player = Player((750,500),camera_group)
-moving_sprites = pygame.sprite.Group()
-moving_sprites.add(player)
+player = Player((640,350),camera_group)

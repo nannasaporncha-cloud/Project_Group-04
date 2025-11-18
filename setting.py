@@ -3,8 +3,7 @@ import pygame
 pygame.init()
 
 #sizescreen
-screenW = 1500
-screenH = 850
+screenW ,screenH = 1500,850
 screen = pygame.display.set_mode((screenW,screenH))
 
 #ชื่อเกมบนtapbar
@@ -22,7 +21,7 @@ WHITE = (255,255,255)
 BLACK = (0,0,0)
 
 #movespeed
-speed = 2
+speed = 3
 
 #FPS
 fps = 30
