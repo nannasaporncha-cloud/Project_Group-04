@@ -29,7 +29,7 @@ fps = 30
 clock = pygame.time.Clock()
 
 #background
-BG= pygame.image.load('game/image/background/fronthouse.jpg').convert_alpha()
+BG= pygame.image.load('image_background/1.png').convert_alpha()
 BG= pygame.transform.scale(BG, (screenW, screenH))
 BG_rect = BG.get_rect(center=(screenW//2, screenH//2))
 

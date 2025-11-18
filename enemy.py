@@ -190,6 +190,7 @@ while running:
     pygame.display.update()
     clock.tick(fps)
 
+    #กล้วยย
     if killed_count >= 4:
         running = False
         pygame.display.update()
