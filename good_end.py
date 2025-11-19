@@ -9,19 +9,20 @@ pygame.display.set_caption("The end")
 clock = pygame.time.Clock()
 fps = 60
 
-ending_bg = pygame.image.load("assets/good_ending.png")
+ending_bg = pygame.image.load("assets/good_ending.png").convert()
+ending_bg = pygame.transform.scale(ending_bg,(WIDTH,HEIGHT))
 
 def run_ending():
     running = True
 
     thai_font = "assets/THsarabaneiei.ttf"
-    font = pygame.font.Font(thai_font, 60)
-    text = font.render("ฉันทำได้แล้วสินะ...",True,(255,255,255))
-    text_rect = text.get_rect(center=(screen.get_width()//2,screen.get_height()//2 -50))
+    font = pygame.font.Font(thai_font, 100)
+    text = font.render("เย้ ฉันทำได้",True,(255,255,255))
+    text_rect = text.get_rect(center=(WIDTH()//2,HEIGHT()//2 -50))
 
     sub_font = pygame.font.Font(thai_font,36)
     sub_text = sub_font.render("กด Enter เพื่อจบเกม", True,(220,220,220))
-    sub_rect = sub_text.get_rect(center=(screen.get_width()//2,screen.get_height()//2 +40))
+    sub_rect = sub_text.get_rect(center=(WIDTH()//2,HEIGHT()//2 +40))
 
     while running:
         for event in pygame.event.get():

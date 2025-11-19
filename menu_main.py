@@ -26,8 +26,8 @@ BLACK = (0,0,0)
 title_font = pygame.font.Font(None,96)
 button_font = pygame.font.Font(None,48)
 
-title_text = title_font.render("", True, RED)
-shadow_text = button_font.render("", True,BLACK)
+
+
 start_text = button_font.render("Start",True,WHITE)
 
 

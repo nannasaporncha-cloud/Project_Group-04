@@ -1,4 +1,5 @@
 import pygame
+#ไม่ต้องเอาไป merge แค่ตัวอย่างเล่นเกมส์
 
 WIDTH , HEIGHT = 1500, 850
 
