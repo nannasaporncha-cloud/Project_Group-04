@@ -1,5 +1,6 @@
 import pygame, sys
 from pygame.locals import *
+#from player import *
 
 pygame.init()
 
@@ -9,7 +10,6 @@ screenH = 850
 tilesize = 30
 screen = pygame.display.set_mode((screenW, screenH))
 pygame.display.set_caption("Tilemap with Background")
-
 # สี
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -50,8 +50,7 @@ all_sprites = pygame.sprite.Group()
 blocks = pygame.sprite.Group()
 
 # คลาส Block
-class Block(pygame.sprite.Sprite):
-    def __init__(self, x, y, color):
+def createblock(self, x, y, color):
         super().__init__(all_sprites, blocks)
         self.image = pygame.Surface((tilesize, tilesize))
         self.image.fill(color)
@@ -86,4 +85,3 @@ while running:
 
     pygame.display.flip()
     clock.tick(60)
-    
