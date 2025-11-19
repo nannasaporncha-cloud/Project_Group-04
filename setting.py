@@ -25,7 +25,7 @@ clock = pygame.time.Clock()
 
 
 #background
-BGf0= pygame.image.load('game/image/background/fronthouse.jpg').convert_alpha()
+BGf0= pygame.image.load('img/bg_img/fronthouse.jpg').convert_alpha()
 BGf0= pygame.transform.scale(BGf0, (screenW, screenH))
 BGf0_rect = BGf0.get_rect(center=(screenW//2, screenH//2))
 
