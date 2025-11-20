@@ -1,15 +1,16 @@
 import pygame
 from pathlib import Path
 import setting as s
-
+ 
+ # ศึกษาจากคลิปวิดีโอ
 pygame.init()
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group,):
         super().__init__(group)
         # กำหนดขนาดมาตรฐาน
-        self.frame_size = (160, 160)
-        self.attack_size = (185,185)
+        self.frame_size = (70, 80)
+        self.attack_size = (125,90)
 
         self.animations = {
             'down': [],  
@@ -19,7 +20,7 @@ class Player(pygame.sprite.Sprite):
             'attack': [],  
         }
 
-        # กำหนดโฟลเดอร์ฐานสำหรับรูปภาพ 
+        # ศึกษาจากคลิปวิดีโอ + ai
         base = Path(__file__).parent / 'image' / 'player'
         for name, sub in [('down', 'mc_front'), 
                           ('up', 'mc_back'), 
@@ -52,11 +53,25 @@ class Player(pygame.sprite.Sprite):
         self.can_attack = True          # ป้องกันกดค้าง
         self.last_dir = 'down'
 
-    def update(self):
+# ศึกษาจากคลิปวิดีโอ +ai
+    def update(self,obstacles=None):
+        if obstacles is None:
+            obstacles = []
         keys = pygame.key.get_pressed()
         self.is_moving = False
         new_dir = None
+# ออมเพิ่ม
+        dx = dy = 0
 
+        if keys[pygame.K_a]:
+            dx = -s.speed
+        if keys[pygame.K_d]:  
+            dx =  s.speed
+        if keys[pygame.K_w]:  
+            dy = -s.speed
+        if keys[pygame.K_s]:  
+            dy =  s.speed
+# ศึกษาจากคลิปวิดีโอ
         # moving
         if keys[pygame.K_a] :
             self.rect.x -= s.speed
@@ -70,7 +85,24 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_s] :
             self.rect.y += s.speed
             new_dir = 'down'; self.is_moving = True
+# ออมเพิ่ม
+        self.rect.x += dx
+        for sprite in obstacles:
+            if self.rect.colliderect(sprite.rect):
+                if dx > 0: 
+                    self.rect.right = sprite.rect.left
+                if dx < 0: 
+                    self.rect.left  = sprite.rect.right
+        
+        self.rect.y += dy
+        for sprite in obstacles:
+            if self.rect.colliderect(sprite.rect):
+                if dy > 0: 
+                    self.rect.bottom = sprite.rect.top
+                if dy < 0: 
+                    self.rect.top = sprite.rect.bottom
 
+# ศึกษาจากคลิปวิดีโอ +ai
         if self.is_moving:
             self.last_dir = new_dir # เก็บท่าล่าสุดที่เดิน
         
@@ -104,6 +136,7 @@ class Player(pygame.sprite.Sprite):
 
         frames = self.animations.get(self.current_direction, self.animations['down'])
 
+# ศึกษาจากคลิปวิดีโอ +ai
         # animation
         if self.is_moving and not self.attacking:
             self.current_sprite += self.anim_speed
@@ -115,7 +148,7 @@ class Player(pygame.sprite.Sprite):
         old_center = self.rect.center
         self.image = frames[int(self.current_sprite)]
         self.rect = self.image.get_rect(center=old_center)
-
+# ศึกษาจากคลิปวิดีโอ 
 class CameraGroup(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
@@ -133,12 +166,8 @@ class CameraGroup(pygame.sprite.Group):
         w = self.display_surface.get_size()[0]  - (self.camera_borders['left'] + self.camera_borders['right'])
         h = self.display_surface.get_size()[1]  - (self.camera_borders['top'] + self.camera_borders['bottom'])
         self.camera_rect = pygame.Rect(l,t,w,h)
-          
-        #ground
-        ground = pygame.image.load("image/background/floor.png").convert_alpha()
-        self.ground_surf = pygame.transform.scale(ground,(1600,1200))
-        self.ground_rect = self.ground_surf.get_rect(topleft=(0,0))
-          
+
+        
     def center_target_camera(self,target):
         self.offset.x = target.rect.centerx - self.half_w
         self.offset.y = target.rect.centery - self.half_h
@@ -156,13 +185,15 @@ class CameraGroup(pygame.sprite.Group):
 
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
-        
-    def custom_draw(self,player):
+
+ # ศึกษาจากคลิปวิดีโอ + ai    
+    def custom_draw(self,player, map_group):
         self.box_target_camera(player)
 
-        #ground
-        ground_offset = self.ground_rect.topleft - self.offset
-        self.display_surface.blit(self.ground_surf,ground_offset)
+        # วาด map (tile) ก่อน
+        for tile in map_group.sprites():        # <-- ใช้ map_group ที่ส่งมา
+            offset_pos = tile.rect.topleft - self.offset
+            self.display_surface.blit(tile.image, offset_pos)
 
         for sprite in self.sprites():
             offset_pos = sprite.rect.topleft - self.offset

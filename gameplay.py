@@ -1,6 +1,8 @@
 import pygame
 from player import *
 from setting import *
+from main_map import map
+from enemy import Enemy ,EnemyManager
 
 pygame.init()
 #ชื่อเกมบนtapbar
@@ -34,11 +36,24 @@ try:
 except Exception as e:
     print("BGM error:", e)
     
-font = pygame.font.Font(None,30)
+font = pygame.font.Font(None,40)
 hint = font.render("Press ESC to return to Home", True, (255,255,255))
+
+#camera setup
+camera_group = CameraGroup()
+player = Player((640,350),camera_group)
+
+# โหลด map
+game_map = map()
+map_group = game_map.get_map_group()
+obstacles = game_map.ob_sprites
+
+enemy_manager = EnemyManager(obstacles)
+enemy_manager.spawn_ghost(5)
 
 
 def run_main_game(screen):
+    global hp, score
     running = True
     while running:
         for event in pygame.event.get():
@@ -50,16 +65,22 @@ def run_main_game(screen):
                 #กลับเมนู
                 pygame.mixer.music.fadeout(500) #เสียงจะค่อยๆเบาลงเเล้วหยุด
                 running = False
-
-        #ถ้าผ่านด่านได้รับของscore+1 #ป้อปอัพข้อความได้รับของ
-        # ถ้าชนมอน หัวใจลด 
         
-        camera_group.update()
+        camera_group.update(obstacles=obstacles)
+        player.update(obstacles) # <-- Update player กับ obstacles 
 
         screen.fill(BLACK)
-        camera_group.custom_draw(player)
+        camera_group.custom_draw(player,map_group)
+        
+        enemy_manager.update(player)  # ไม่ต้องส่ง attack_rect แล้ว
+        enemy_manager.draw(screen,camera_group)
+
+
+        score_text = font.render(f"Score: {score}", True, WHITE)
+        HP_text = font.render("HP:", True, WHITE)
         screen.blit(score_text, score_rect)
         screen.blit(HP_text, HP_rect)
+
         for i in range(hp):
             x = 100 +i *(heart_size[0]+10)
             screen.blit(heart_images,(x,20) )

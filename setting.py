@@ -26,3 +26,7 @@ speed = 3
 #FPS
 fps = 30
 clock = pygame.time.Clock()
+
+ground = pygame.image.load("image/background/floor02.jpg").convert_alpha()
+ground_surf = pygame.transform.scale(ground,(1600,1200))
+ground_rect = ground_surf.get_rect(topleft=(0,0))
